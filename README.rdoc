@@ -1,0 +1,11 @@
+=Rubiverse
+
+Talk to a Universe of Things! \o/
+
+=Ruby gem usage
+
+  require "thingiverse"
+
+  tv = Thingiverse.new(client_id, client_secret, code)
+
+  puts tv.newest.first["name"]
