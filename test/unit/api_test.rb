@@ -11,19 +11,19 @@ class APITest < Test::Unit::TestCase
     @thingiverse.access_token = 'c7ed8686c1686e23305cc6ea24c72497';
   end
 	
-	def test_get_thing
-	 thing = @thingiverse.things.find(17508)
-	 
-	 assert thing.name == "Ring-A-Thing w/ Pin Connectors"
-	end
+  def test_get_thing
+    thing = @thingiverse.things.find(17508)
+
+    assert thing.name == "Ring-A-Thing w/ Pin Connectors"
+  end
 
   def test_thing_files
- 	 thing = @thingiverse.things.find(17508)
- 	 files = thing.files
+    thing = @thingiverse.things.find(17508)
+    files = thing.files
 
-   # puts files.first.name
+    # puts files.first.name
 
-   assert files.size > 0
+    assert files.size > 0
   end
 
 end
