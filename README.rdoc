@@ -4,8 +4,15 @@ Talk to a Universe of Things! \\o/
 
 =Ruby gem usage
 
-  require "thingiverse"
+This will take a temp code and do the oauth to access_token for you.
 
-  tv = Thingiverse.new(client_id, client_secret, code)
+  require 'thingiverse'
+  tv = Thingiverse::Connection.new(client_id, client_secret, code)
+  puts tv.newest.first.name
 
-  puts tv.newest.first["name"]
+If you already have an access_token you can just do this.
+
+  tv = Thingiverse::Connection.new
+  tv.access_token = my_access_token
+  puts tv.things.find(thing_id).files.first.name
+
