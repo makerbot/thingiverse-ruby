@@ -21,9 +21,14 @@ class APITest < Test::Unit::TestCase
     thing = @thingiverse.things.find(17508)
     files = thing.files
 
-    # puts files.first.name
-
     assert files.size > 0
+  end
+
+  def test_thing_user
+    thing = @thingiverse.things.find(17508)
+    user = thing.user
+    
+    assert user.name == 'tbuser'
   end
 
 end

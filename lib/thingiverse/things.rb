@@ -40,6 +40,12 @@ module Thingiverse
       }
     end
 
+    def user
+      response = Thingiverse::Connection.get("/users/#{creator['name']}")
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+      Thingiverse::Users.new response.parsed_response
+    end
+
     def files
       response = Thingiverse::Connection.get(files_url)
       raise "#{response.code}: TODO: Error Handling :)" unless response.success?
