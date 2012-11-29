@@ -10,18 +10,18 @@ class OAUTHTest < Test::Unit::TestCase
     @thingiverse.base_url = 'http://api.thingiverse.dev:8888'
   end
 	
-  # def test_get_token
-  #   # hard to test a temp code :(
-  #   @thingiverse.code = 'temp_code'
-  #   access_token = @thingiverse.get_token
-  # 
-  #   assert_not_nil access_token
-  #   assert_not_nil @thingiverse.access_token
-  # 
-  #   result = @thingiverse.newest
-  # 
-  #   assert_not_nil result
-  # end
+  def test_get_token
+    # hard to test a temp code :(
+    @thingiverse.code = 'temp_code'
+    access_token = @thingiverse.get_token
+
+    assert_not_nil access_token
+    assert @thingiverse.access_token.size > 0
+  
+    result = @thingiverse.things.newest
+  
+    assert_not_nil result
+  end
 
   def test_set_token
     @thingiverse.access_token = 'c7ed8686c1686e23305cc6ea24c72497';

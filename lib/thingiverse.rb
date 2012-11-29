@@ -2,6 +2,7 @@ require 'rubygems'
 require 'json'
 require 'httparty'
 require 'active_model'
+require 'cgi'
 
 require 'thingiverse/connection'
 require 'thingiverse/things'

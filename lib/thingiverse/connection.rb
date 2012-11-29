@@ -32,9 +32,13 @@ module Thingiverse
     end
 
     def get_token
-      auth_response = self.class.post(@auth_url, {:client_id => @client_id, :client_secret => @client_secret, :code => @code})
+      auth_response = self.class.post(@auth_url, :query => {:client_id => @client_id, :client_secret => @client_secret, :code => @code})
 
-      @access_token = auth_response['access_token']
+      raise "#{auth_response.code}: #{auth_response.body.inspect}" unless auth_response.success?
+
+      response = CGI::parse(auth_response.parsed_response)
+
+      @access_token = response['access_token']
 
       self.class.headers "Authorization" => "Bearer #{@access_token}"
 
