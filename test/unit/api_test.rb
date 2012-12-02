@@ -31,4 +31,16 @@ class APITest < Test::Unit::TestCase
     assert user.name == 'tbuser'
   end
 
+  def test_user_me
+    user = @thingiverse.users.find('me')
+
+    assert user.name == 'tbuser'
+  end
+
+  def test_user_name
+    user = @thingiverse.users.find('bre')
+
+    assert user.location == 'Brooklyn'
+  end
+
 end

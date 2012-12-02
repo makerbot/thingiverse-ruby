@@ -32,5 +32,10 @@ module Thingiverse
       }
     end
     
+    def self.find(user_name)
+      response = Thingiverse::Connection.get("/users/#{user_name}")
+      raise "#{response.code}: TODO: Error Handling :)" unless response.success?
+      self.new response.parsed_response
+    end
   end
 end

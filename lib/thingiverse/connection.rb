@@ -48,5 +48,9 @@ module Thingiverse
     def things
       Thingiverse::Things
     end
+
+    def users
+      Thingiverse::Users
+    end
   end
 end
