@@ -48,7 +48,7 @@ module Thingiverse
 
     def files
       response = Thingiverse::Connection.get(files_url)
-      raise "#{response.code}: TODO: Error Handling :)" unless response.success?
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
       response.parsed_response.collect do |attrs|
         Thingiverse::Files.new attrs
       end
@@ -66,13 +66,13 @@ module Thingiverse
     
     def self.find(thing_id)
       response = Thingiverse::Connection.get("/things/#{thing_id}")
-      raise "#{response.code}: TODO: Error Handling :)" unless response.success?
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
       self.new response.parsed_response
     end
     
     def self.newest
       response = Thingiverse::Connection.get('/newest')
-      raise "#{response.code}: TODO: Error Handling :)" unless response.success?
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
       response.parsed_response.collect do |attrs|
         self.new attrs
       end
