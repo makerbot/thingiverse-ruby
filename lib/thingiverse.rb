@@ -8,6 +8,7 @@ require 'thingiverse/connection'
 require 'thingiverse/things'
 require 'thingiverse/files'
 require 'thingiverse/users'
+require 'thingiverse/images'
 
 module Thingiverse
   VERSION = '0.0.1'

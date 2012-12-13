@@ -54,6 +54,14 @@ module Thingiverse
       end
     end
 
+    def images
+      response = Thingiverse::Connection.get(images_url)
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+      response.parsed_response.collect do |attrs|
+        Thingiverse::Images.new attrs
+      end
+    end
+
     # TODO: implement  :)
     # def self.create(attributes)
     #   thing = new(attributes)

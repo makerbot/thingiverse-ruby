@@ -43,4 +43,13 @@ class APITest < Test::Unit::TestCase
     assert user.location == 'Brooklyn'
   end
 
+  def test_thing_images
+    thing = @thingiverse.things.find(17508)
+    images = thing.images
+    
+    assert images.size > 0
+    # TODO: make this more easily selectable!  Also: how do you select images for a file??
+    # puts images[0].sizes.select {|f| f["type"] == "display" and f["size"] == "small" }[0].inspect
+    # puts images[0].sizes.select {|f| f["type"] == "display" and f["size"] == "small" }[0]["url"]
+  end
 end
