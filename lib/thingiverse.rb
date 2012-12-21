@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'json'
 require 'httparty'
+require 'curb'
 require 'active_model'
 require 'cgi'
 

@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   
   s.add_dependency("json")
   s.add_dependency("httparty")
+  s.add_dependency("curb")
   s.add_dependency("active_model")
   s.add_dependency("cgi")
 end
