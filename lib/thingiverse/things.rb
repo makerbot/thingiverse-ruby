@@ -64,6 +64,14 @@ module Thingiverse
       end
     end
 
+    def categories
+      response = Thingiverse::Connection.get(categories_url)
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+      response.parsed_response.collect do |attrs|
+        Thingiverse::Categories.new attrs
+      end
+    end
+
     def save
       if id.to_s == ""
         thing = Thingiverse::Things.create(attributes)

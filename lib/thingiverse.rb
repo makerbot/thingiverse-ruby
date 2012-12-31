@@ -10,6 +10,7 @@ require 'thingiverse/things'
 require 'thingiverse/files'
 require 'thingiverse/users'
 require 'thingiverse/images'
+require 'thingiverse/categories'
 
 module Thingiverse
   VERSION = '0.0.1'

@@ -92,12 +92,18 @@ class APITest < Test::Unit::TestCase
   def test_publish_new_thing
     thing = @thingiverse.things.new(:name => 'Create Test Thing', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
     thing.save
-
+  
     thing.upload(File.open(File.dirname(__FILE__) + '/../fixtures/test.stl'))
-
+  
     thing.publish
     
     assert thing.is_published
+  end
+  
+  def test_thing_category
+    thing = @thingiverse.things.find(27091)
+  
+    assert thing.categories[0].name == "Scans & Replicas"
   end
   
 end
