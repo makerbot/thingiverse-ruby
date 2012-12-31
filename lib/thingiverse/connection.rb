@@ -1,6 +1,7 @@
 module Thingiverse
   class Connection
     include HTTParty
+    # debug_output $stderr
     attr_accessor :client_id, :client_secret, :code, :access_token, :auth_url, :base_url
   
     def initialize(client_id = nil, client_secret = nil, code = nil)

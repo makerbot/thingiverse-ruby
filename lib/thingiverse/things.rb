@@ -93,6 +93,7 @@ module Thingiverse
       # stupid S3 requires params to be in a certain order... so can't use HTTParty :(      
       # prepare post data
       post_data = []      
+      # TODO: is query['bucket'] needed here?
       post_data << Curl::PostField.content('key',                     query['key'])
       post_data << Curl::PostField.content('AWSAccessKeyId',          query['AWSAccessKeyId'])
       post_data << Curl::PostField.content('acl',                     query['acl'])
@@ -106,6 +107,7 @@ module Thingiverse
 
       # post                               
       c = Curl::Easy.new(action) do |curl|
+        # curl.verbose = true
         # can't follow redirect to finalize here because need to pass access_token for auth
         curl.follow_location = false
       end
@@ -119,6 +121,21 @@ module Thingiverse
         Thingiverse::Files.new(response.parsed_response)
       else
         raise "#{c.response_code}: #{c.body_str}"
+      end
+    end
+
+    def publish
+      if id.to_s == ""
+        raise "Cannot publish until thing is saved"
+      else
+        response = Thingiverse::Connection.post("/things/#{id}/publish")
+        raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+
+        thing = Thingiverse::Things.new(response.parsed_response)
+      end
+      
+      thing.attributes.each do |name, value|
+        send("#{name}=", value)
       end
     end
     

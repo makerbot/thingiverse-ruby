@@ -68,7 +68,7 @@ class APITest < Test::Unit::TestCase
     assert thing.id.to_s != ''
     assert thing.added.to_s != ''
   end
-
+  
   def test_update_thing
     thing = @thingiverse.things.find(29387)
   
@@ -79,14 +79,25 @@ class APITest < Test::Unit::TestCase
     
     assert thing.modified > date_before
   end
-
+  
   def test_file_upload
     thing = @thingiverse.things.create(:name => 'Create Test Thing With File', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
     # thing = @thingiverse.things.find(29387)
     file = thing.upload(File.open(File.dirname(__FILE__) + '/../fixtures/test.stl'))
-
+  
     # puts file.url    
     assert file.name == 'test.stl'
+  end
+  
+  def test_publish_new_thing
+    thing = @thingiverse.things.new(:name => 'Create Test Thing', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
+    thing.save
+
+    thing.upload(File.open(File.dirname(__FILE__) + '/../fixtures/test.stl'))
+
+    thing.publish
+    
+    assert thing.is_published
   end
   
 end
