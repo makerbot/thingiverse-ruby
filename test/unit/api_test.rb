@@ -105,5 +105,19 @@ class APITest < Test::Unit::TestCase
   
     assert thing.categories[0].name == "Scans & Replicas"
   end
+
+  def test_set_ancestors
+    thing = @thingiverse.things.new(
+      :name => 'Test Thing With Ancestors', 
+      :license => 'cc-sa', 
+      :category => 'other', 
+      :description => 'foo bar', 
+      :is_wip => true,
+      :ancestors => [27091, 29387]
+    )
+    thing.save
+    
+    assert thing.ancestor_things.size == 2    
+  end
   
 end

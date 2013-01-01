@@ -6,7 +6,7 @@ module Thingiverse
     attr_accessor :id, :name, :thumbnail, :url, :public_url, :creator, :added, :modified, :is_published, :is_wip
     attr_accessor :ratings_enabled, :like_count, :description, :instructions, :license
     attr_accessor :files_url, :images_url, :likes_url, :ancestors_url, :derivatives_url, :tags_url, :categories_url
-    attr_accessor :category
+    attr_accessor :category, :ancestors
     
     def initialize(params={})
       params.each do |name, value|
@@ -38,7 +38,8 @@ module Thingiverse
         :derivatives_url => derivatives_url.to_s, 
         :tags_url => tags_url.to_s, 
         :categories_url => categories_url.to_s,
-        :category => category.to_s
+        :category => category.to_s,
+        :ancestors => ancestors || []
       }
     end
 
@@ -69,6 +70,14 @@ module Thingiverse
       raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
       response.parsed_response.collect do |attrs|
         Thingiverse::Categories.new attrs
+      end
+    end
+
+    def ancestor_things
+      response = Thingiverse::Connection.get(ancestors_url)
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+      response.parsed_response.collect do |attrs|
+        Thingiverse::Things.new attrs
       end
     end
 
