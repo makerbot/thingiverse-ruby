@@ -11,6 +11,7 @@ require 'thingiverse/files'
 require 'thingiverse/users'
 require 'thingiverse/images'
 require 'thingiverse/categories'
+require 'thingiverse/tags'
 
 module Thingiverse
   VERSION = '0.0.1'

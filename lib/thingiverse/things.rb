@@ -6,7 +6,7 @@ module Thingiverse
     attr_accessor :id, :name, :thumbnail, :url, :public_url, :creator, :added, :modified, :is_published, :is_wip
     attr_accessor :ratings_enabled, :like_count, :description, :instructions, :license
     attr_accessor :files_url, :images_url, :likes_url, :ancestors_url, :derivatives_url, :tags_url, :categories_url
-    attr_accessor :category, :ancestors
+    attr_accessor :category, :ancestors, :tags
     
     def initialize(params={})
       params.each do |name, value|
@@ -39,7 +39,8 @@ module Thingiverse
         :tags_url => tags_url.to_s, 
         :categories_url => categories_url.to_s,
         :category => category.to_s,
-        :ancestors => ancestors || []
+        :ancestors => ancestors || [],
+        :tags => tags || []
       }
     end
 
@@ -73,11 +74,21 @@ module Thingiverse
       end
     end
 
+    # TODO: this is a dumb name, come up with a better way to set/retrieve
     def ancestor_things
       response = Thingiverse::Connection.get(ancestors_url)
       raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
       response.parsed_response.collect do |attrs|
         Thingiverse::Things.new attrs
+      end
+    end
+
+    # TODO: this is a dumb name, come up with a better way to set/retrieve
+    def tag_records
+      response = Thingiverse::Connection.get(tags_url)
+      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+      response.parsed_response.collect do |attrs|
+        Thingiverse::Tags.new attrs
       end
     end
 
