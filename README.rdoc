@@ -2,6 +2,14 @@
 
 Talk to a Universe of Things! \\o/
 
+For more information see: http://www.thingiverse.com/developers
+
+This gem should be considered beta and doesn't yet implement all of the Thingiverse API.
+
+=Installation
+
+sudo gem install thingiverse-ruby
+
 =Ruby gem usage
 
 This will take a temp code and do the oauth to access_token for you.
