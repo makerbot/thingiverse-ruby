@@ -1,3 +1,4 @@
+$LOAD_PATH.push File.expand_path("../lib", __FILE__)
 require File.expand_path("../lib/thingiverse", __FILE__)
 
 Gem::Specification.new do |s|

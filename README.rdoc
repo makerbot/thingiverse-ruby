@@ -8,7 +8,7 @@ This gem should be considered beta and doesn't yet implement all of the Thingive
 
 =Installation
 
-sudo gem install thingiverse-ruby
+sudo gem install thingiverse
 
 =Ruby gem usage
 
