@@ -5,10 +5,10 @@ require "thingiverse"
 class APITest < Test::Unit::TestCase
 
   def setup
-    @thingiverse = Thingiverse::Connection.new('6806845037e641ebaf75', '275908d8c6fa29900fd73199b1cea3b2')
-    @thingiverse.auth_url = 'http://thingiverse.dev:8888/login/oauth/access_token'
-    @thingiverse.base_url = 'http://api.thingiverse.dev:8888'
-    @thingiverse.access_token = 'd522b2638d92145e46bd6baf17555ca3';
+    @thingiverse = Thingiverse::Connection.new(THINGIVERSE_CLIENT_ID, THINGIVERSE_SECRET)
+    @thingiverse.auth_url = THINGIVERSE_AUTH_URL
+    @thingiverse.base_url = THINGIVERSE_BASE_URL
+    @thingiverse.access_token = THINGIVERSE_ACCESS_TOKEN;
   end
 
   def test_get_thing
