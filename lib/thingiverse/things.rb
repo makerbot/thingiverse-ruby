@@ -7,36 +7,36 @@ module Thingiverse
     attr_accessor :ratings_enabled, :like_count, :description, :instructions, :license
     attr_accessor :files_url, :images_url, :likes_url, :ancestors_url, :derivatives_url, :tags_url, :categories_url
     attr_accessor :category, :ancestors, :tags
-    
+
     def initialize(params={})
       params.each do |name, value|
         send("#{name}=", value)
       end
     end
-    
+
     def attributes
       {
         :id => id.to_s,
         :name => name.to_s,
         :thumbnail => thumbnail.to_s,
         :url => url.to_s,
-        :public_url => public_url.to_s, 
-        :creator => creator.to_s, 
-        :added => added.to_s, 
+        :public_url => public_url.to_s,
+        :creator => creator.to_s,
+        :added => added.to_s,
         :modified => modified.to_s,
-        :is_published => is_published != true ? false : true, 
+        :is_published => is_published != true ? false : true,
         :is_wip => is_wip != true ? false : true,
-        :ratings_enabled => ratings_enabled != true ? false : true, 
-        :like_count => like_count.to_s, 
-        :description => description.to_s, 
-        :instructions => instructions.to_s, 
-        :license => license.to_s, 
-        :files_url => files_url.to_s, 
-        :images_url => images_url.to_s, 
+        :ratings_enabled => ratings_enabled != true ? false : true,
+        :like_count => like_count.to_s,
+        :description => description.to_s,
+        :instructions => instructions.to_s,
+        :license => license.to_s,
+        :files_url => files_url.to_s,
+        :images_url => images_url.to_s,
         :likes_url => likes_url.to_s,
-        :ancestors_url => ancestors_url.to_s, 
-        :derivatives_url => derivatives_url.to_s, 
-        :tags_url => tags_url.to_s, 
+        :ancestors_url => ancestors_url.to_s,
+        :derivatives_url => derivatives_url.to_s,
+        :tags_url => tags_url.to_s,
         :categories_url => categories_url.to_s,
         :category => category.to_s,
         :ancestors => ancestors || [],
@@ -103,7 +103,7 @@ module Thingiverse
 
         thing = Thingiverse::Things.new(response.parsed_response)
       end
-      
+
       thing.attributes.each do |name, value|
         send("#{name}=", value)
       end
@@ -114,13 +114,13 @@ module Thingiverse
       raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
 
       parsed_response = JSON.parse(response.body)
-      action = parsed_response["action"]      
+      action = parsed_response["action"]
       query = parsed_response["fields"]
       query["file"] = file
 
-      # stupid S3 requires params to be in a certain order... so can't use HTTParty :(      
+      # stupid S3 requires params to be in a certain order... so can't use HTTParty :(
       # prepare post data
-      post_data = []      
+      post_data = []
       # TODO: is query['bucket'] needed here?
       post_data << Curl::PostField.content('key',                     query['key'])
       post_data << Curl::PostField.content('AWSAccessKeyId',          query['AWSAccessKeyId'])
@@ -133,7 +133,7 @@ module Thingiverse
 
       post_data << Curl::PostField.file('file', file.path)
 
-      # post                               
+      # post
       c = Curl::Easy.new(action) do |curl|
         # curl.verbose = true
         # can't follow redirect to finalize here because need to pass access_token for auth
@@ -161,18 +161,18 @@ module Thingiverse
 
         thing = Thingiverse::Things.new(response.parsed_response)
       end
-      
+
       thing.attributes.each do |name, value|
         send("#{name}=", value)
       end
     end
-    
+
     def self.find(thing_id)
       response = Thingiverse::Connection.get("/things/#{thing_id}")
       raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
       self.new response.parsed_response
     end
-    
+
     def self.newest
       response = Thingiverse::Connection.get('/newest')
       raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
@@ -184,7 +184,7 @@ module Thingiverse
     def self.create(params)
       thing = self.new(params)
       raise "Invalid Parameters" unless thing.valid?
-    
+
       response = Thingiverse::Connection.post('/things', :body => thing.attributes.to_json)
       raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
 
