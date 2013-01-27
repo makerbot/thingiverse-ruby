@@ -8,7 +8,7 @@ class APITest < Test::Unit::TestCase
     @thingiverse = Thingiverse::Connection.new(THINGIVERSE_CLIENT_ID, THINGIVERSE_SECRET)
     @thingiverse.auth_url = THINGIVERSE_AUTH_URL
     @thingiverse.base_url = THINGIVERSE_BASE_URL
-    @thingiverse.access_token = THINGIVERSE_ACCESS_TOKEN;
+    @thingiverse.access_token = THINGIVERSE_ACCESS_TOKEN
   end
 
   def test_get_thing
