@@ -6,20 +6,20 @@ module Thingiverse
     attr_accessor :id, :name, :thumbnail, :url, :public_url, :bio, :location, :registered, :last_active
     attr_accessor :email, :default_license
     attr_accessor :things_url, :copies_url, :likes_url
-    
+
     def initialize(attributes={})
       attributes.each do |name, value|
         send("#{name}=", value)
       end
     end
-    
+
     def attributes
       {
         :id => id,
         :name => name,
         :thumbnail => thumbnail,
         :url => url,
-        :public_url => public_url, 
+        :public_url => public_url,
         :bio => bio,
         :location => location,
         :registered => registered,
@@ -31,7 +31,7 @@ module Thingiverse
         :default_license => default_license
       }
     end
-    
+
     def self.find(user_name)
       response = Thingiverse::Connection.get("/users/#{user_name}")
       raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?

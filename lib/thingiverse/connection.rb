@@ -3,14 +3,14 @@ module Thingiverse
     include HTTParty
     # debug_output $stderr
     attr_accessor :client_id, :client_secret, :code, :access_token, :auth_url, :base_url
-  
+
     def initialize(client_id = nil, client_secret = nil, code = nil)
       @client_id      = client_id
       @client_secret  = client_secret
       @code           = code
-    
+
       self.class.base_uri(self.base_url)
-    
+
       self.get_token if @client_id and @client_secret and @code
     end
 
@@ -33,7 +33,7 @@ module Thingiverse
     end
 
     def get_token
-      auth_response = self.class.post(@auth_url, :query => {:client_id => @client_id, :client_secret => @client_secret, :code => @code})
+      auth_response = self.class.post(auth_url, :query => {:client_id => @client_id, :client_secret => @client_secret, :code => @code})
 
       raise "#{auth_response.code}: #{auth_response.body.inspect}" unless auth_response.success?
 
@@ -45,7 +45,7 @@ module Thingiverse
 
       @access_token
     end
-    
+
     def things
       Thingiverse::Things
     end

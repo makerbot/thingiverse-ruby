@@ -5,11 +5,11 @@ require "thingiverse"
 class OAUTHTest < Test::Unit::TestCase
 
   def setup
-    @thingiverse = Thingiverse::Connection.new('d1039c7beaa77f69aa6d', 'a24ab8620ad63fbc99794242f7e08aa0')
-    @thingiverse.auth_url = 'http://thingiverse.dev:8888/login/oauth/access_token'
-    @thingiverse.base_url = 'http://api.thingiverse.dev:8888'
+    @thingiverse = Thingiverse::Connection.new(THINGIVERSE_CLIENT_ID, THINGIVERSE_SECRET)
+    @thingiverse.auth_url = THINGIVERSE_AUTH_URL
+    @thingiverse.base_url = THINGIVERSE_BASE_URL
   end
-	
+
   def test_get_token
     # hard to test a temp code :(
     @thingiverse.code = 'temp_code'
@@ -17,14 +17,14 @@ class OAUTHTest < Test::Unit::TestCase
 
     assert_not_nil access_token
     assert @thingiverse.access_token.size > 0
-  
+
     result = @thingiverse.things.newest
-  
+
     assert_not_nil result
   end
 
   def test_set_token
-    @thingiverse.access_token = 'c7ed8686c1686e23305cc6ea24c72497';
+    @thingiverse.access_token = THINGIVERSE_ACCESS_TOKEN
 
     result = @thingiverse.things.newest
     # puts result.first.name

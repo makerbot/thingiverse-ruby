@@ -9,7 +9,7 @@ module Thingiverse
         send("#{name}=", value)
       end
     end
-    
+
     def attributes
       {
         :name => name,
