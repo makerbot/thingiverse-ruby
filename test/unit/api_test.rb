@@ -70,14 +70,19 @@ class APITest < Test::Unit::TestCase
   end
   
   def test_update_thing
-    thing = @thingiverse.things.find(29387)
-  
-    date_before = thing.modified
-  
-    thing.name = "furry foo bar"
-    thing.save
+    thing = @thingiverse.things.create(:name => 'Test Thing', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
     
-    assert thing.modified > date_before
+    thing.name = "Update Test Thing"
+    thing.save
+    date_before = thing.modified
+
+    sleep(5)
+  
+    thing.name = "Updated Test Thing"
+    thing.save
+    date_after = thing.modified
+    
+    assert date_after > date_before
   end
   
   def test_file_upload
@@ -130,7 +135,7 @@ class APITest < Test::Unit::TestCase
       :tags => ["foo", "bar", "baz"]
     )
     thing.save
-
+  
     assert thing.tag_records.size == 3
   end
 end
