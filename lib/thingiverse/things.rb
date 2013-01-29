@@ -50,37 +50,20 @@ module Thingiverse
       Thingiverse::Users.new response.parsed_response
     end
 
-    def files
-      response = Thingiverse::Connection.get(files_url)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
-      response.parsed_response.collect do |attrs|
-        Thingiverse::Files.new attrs
-      end
+    def files(query = {})
+      Thingiverse::Pagination.new(Thingiverse::Connection.get(@files_url, :query => query), Thingiverse::Files)
     end
 
-    def images
-      response = Thingiverse::Connection.get(images_url)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
-      response.parsed_response.collect do |attrs|
-        Thingiverse::Images.new attrs
-      end
+    def images(query = {})
+      Thingiverse::Pagination.new(Thingiverse::Connection.get(@images_url, :query => query), Thingiverse::Images)
     end
 
-    def categories
-      response = Thingiverse::Connection.get(categories_url)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
-      response.parsed_response.collect do |attrs|
-        Thingiverse::Categories.new attrs
-      end
+    def categories(query = {})
+      Thingiverse::Pagination.new(Thingiverse::Connection.get(@categories_url, :query => query), Thingiverse::Categories)
     end
 
-    # TODO: this is a dumb name, come up with a better way to set/retrieve
-    def ancestor_things
-      response = Thingiverse::Connection.get(ancestors_url)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
-      response.parsed_response.collect do |attrs|
-        Thingiverse::Things.new attrs
-      end
+    def parents(query = {})
+      Thingiverse::Pagination.new(Thingiverse::Connection.get(@ancestors_url, :query => query), Thingiverse::Things)
     end
 
     # TODO: this is a dumb name, come up with a better way to set/retrieve
@@ -173,12 +156,8 @@ module Thingiverse
       self.new response.parsed_response
     end
 
-    def self.newest
-      response = Thingiverse::Connection.get('/newest')
-      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
-      response.parsed_response.collect do |attrs|
-        self.new attrs
-      end
+    def self.newest(query = {})
+      Thingiverse::Pagination.new(Thingiverse::Connection.get('/newest', :query => query), Thingiverse::Things)
     end
 
     def self.create(params)

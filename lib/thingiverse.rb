@@ -6,6 +6,7 @@ require 'active_model'
 require 'cgi'
 
 require 'thingiverse/connection'
+require 'thingiverse/pagination'
 require 'thingiverse/things'
 require 'thingiverse/files'
 require 'thingiverse/users'

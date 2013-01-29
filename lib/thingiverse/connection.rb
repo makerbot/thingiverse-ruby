@@ -53,5 +53,9 @@ module Thingiverse
     def users
       Thingiverse::Users
     end
+    
+    def tags
+      Thingiverse::Tags
+    end
   end
 end
