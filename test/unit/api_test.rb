@@ -176,4 +176,10 @@ class APITest < Test::Unit::TestCase
     assert newest_things.first.name.size > 0
     assert newest_things.total_pages > 0
   end
+  
+  def test_pagination_per_page
+    tag = @thingiverse.tags.find("reprap")
+    things = tag.things(:per_page => 8)
+    assert things.total_pages > 8
+  end
 end
