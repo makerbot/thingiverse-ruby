@@ -3,7 +3,7 @@ module Thingiverse
     include ActiveModel::Validations
     validates_presence_of :name
 
-    attr_accessor :id, :name, :thumbnail, :url, :public_url, :threejs_url
+    attr_accessor :id, :name, :thumbnail, :url, :public_url, :threejs_url, :download_url
     def initialize(attributes={})
       attributes.each do |name, value|
         send("#{name}=", value)
@@ -17,7 +17,8 @@ module Thingiverse
         :thumbnail => thumbnail,
         :url => url,
         :public_url => public_url,
-        :threejs_url => threejs_url
+        :threejs_url => threejs_url,
+        :download_url => download_url
       }
     end
   end
