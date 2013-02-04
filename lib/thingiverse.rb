@@ -4,6 +4,7 @@ require 'httparty'
 require 'curb'
 require 'active_model'
 require 'cgi'
+require 'uri'
 
 require 'thingiverse/connection'
 require 'thingiverse/pagination'

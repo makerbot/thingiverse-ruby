@@ -23,20 +23,15 @@ module Thingiverse
         @response.headers["link"].split(",").each do |link|
           url, rel = link.split(";").collect{|p| p.gsub(/\<|\>|rel\=|\"/,'').strip}
           instance_variable_set("@#{rel}_url", url)
-          url_params = CGI.parse(url)
+          url_params = CGI.parse(URI.parse(url).query.to_s)
 
           case rel
-          when "first"
-            @first_url = url
           when "last"
             @total_pages = url_params["page"][0].to_i
-            @last_url = url
           when "next"
             @current_page = url_params["page"][0].to_i - 1
-            @next_url = url
           when "prev"
             @current_page = url_params["page"][0].to_i + 1
-            @prev_url = url
           end
         end
       end
