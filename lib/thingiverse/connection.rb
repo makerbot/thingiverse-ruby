@@ -39,7 +39,7 @@ module Thingiverse
 
       response = CGI::parse(auth_response.parsed_response)
 
-      @access_token = response['access_token'].to_s
+      @access_token = response['access_token'].first.to_s
 
       self.class.headers "Authorization" => "Bearer #{@access_token}"
 
