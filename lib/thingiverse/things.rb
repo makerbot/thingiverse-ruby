@@ -92,50 +92,6 @@ module Thingiverse
       end
     end
 
-    def upload_string(file_content, file_name)
-      #TODO: refactor the two variations of upload, instead of copy/paste
-      response = Thingiverse::Connection.post("/things/#{id}/files", :body => {:filename => file_name}.to_json)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
-
-      parsed_response = JSON.parse(response.body)
-      action = parsed_response["action"]
-      query = parsed_response["fields"]
-
-      # stupid S3 requires params to be in a certain order... so can't use HTTParty :(
-      # prepare post data
-      post_data = []
-      # TODO: is query['bucket'] needed here?
-      post_data << Curl::PostField.content('key',                     query['key'])
-      post_data << Curl::PostField.content('AWSAccessKeyId',          query['AWSAccessKeyId'])
-      post_data << Curl::PostField.content('acl',                     query['acl'])
-      post_data << Curl::PostField.content('success_action_redirect', query['success_action_redirect'])
-      post_data << Curl::PostField.content('policy',                  query['policy'])
-      post_data << Curl::PostField.content('signature',               query['signature'])
-      post_data << Curl::PostField.content('Content-Type',            query['Content-Type'])
-      post_data << Curl::PostField.content('Content-Disposition',     query['Content-Disposition'])
-
-
-      post_data << Curl::PostField.file('file', file_name) { file_content }
-
-      # post
-      c = Curl::Easy.new(action) do |curl|
-        # curl.verbose = true
-        # can't follow redirect to finalize here because need to pass access_token for auth
-        curl.follow_location = false
-      end
-      c.multipart_form_post = true
-      c.http_post(post_data)
-
-      if c.response_code == 303
-        # finalize it
-        response = Thingiverse::Connection.post(query['success_action_redirect'])
-        raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
-        Thingiverse::Files.new(response.parsed_response)
-      else
-        raise "#{c.response_code}: #{c.body_str}"
-      end
-    end
-
     def upload(file)
       response = Thingiverse::Connection.post("/things/#{id}/files", :body => {:filename => File.basename(file.path)}.to_json)
       raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
