@@ -16,7 +16,7 @@ This will take a temp code and do the oauth to access_token for you.
 
   require 'thingiverse'
   tv = Thingiverse::Connection.new(client_id, client_secret, code)
-  puts tv.newest.first.name
+  puts tv.things.newest.first.name
 
 If you already have an access_token you can just do this.
 
