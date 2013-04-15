@@ -16,5 +16,5 @@ require 'thingiverse/categories'
 require 'thingiverse/tags'
 
 module Thingiverse
-  VERSION = '0.0.5'
+  VERSION = '0.0.6'
 end

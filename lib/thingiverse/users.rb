@@ -3,9 +3,9 @@ module Thingiverse
     include ActiveModel::Validations
     validates_presence_of :name
 
-    attr_accessor :id, :name, :thumbnail, :url, :public_url, :bio, :location, :registered, :last_active
-    attr_accessor :email, :default_license
-    attr_accessor :things_url, :copies_url, :likes_url
+    attr_accessor :id, :name, :full_name, :thumbnail, :url, :public_url, :bio, :location, :registered, :last_active
+    attr_accessor :email, :default_license, :is_following
+    attr_accessor :things_url, :copies_url, :likes_url, :downloads_url, :collections_url
 
     def initialize(attributes={})
       attributes.each do |name, value|
@@ -17,6 +17,7 @@ module Thingiverse
       {
         :id => id,
         :name => name,
+        :full_name => full_name,
         :thumbnail => thumbnail,
         :url => url,
         :public_url => public_url,
@@ -28,7 +29,10 @@ module Thingiverse
         :copies_url => copies_url,
         :likes_url => likes_url,
         :email => email,
-        :default_license => default_license
+        :default_license => default_license,
+        :downloads_url => downloads_url,
+        :collections_url => collections_url,
+        :is_following => is_following
       }
     end
 

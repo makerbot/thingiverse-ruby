@@ -29,6 +29,7 @@ class APITest < Test::Unit::TestCase
     user = thing.user
   
     assert user.name == 'tbuser'
+    assert user.full_name == 'Tony Buser'
   end
   
   def test_user_me
@@ -170,7 +171,7 @@ class APITest < Test::Unit::TestCase
     second_page = tag.things(:page => 2)
     assert more_things.first.name == second_page.first.name
   end
-
+  
   def test_newest
     newest_things = @thingiverse.things.newest
     assert newest_things.first.name.size > 0
