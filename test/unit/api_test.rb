@@ -85,13 +85,39 @@ class APITest < Test::Unit::TestCase
     assert date_after > date_before
   end
   
-  def test_file_upload
+  def test_file_upload_with_file_object_default_name
     thing = @thingiverse.things.create(:name => 'Create Test Thing With File', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
     # thing = @thingiverse.things.find(29387)
     file = thing.upload(File.open(File.dirname(__FILE__) + '/../fixtures/test.stl'))
   
     # puts file.url
     assert file.name == 'test.stl'
+  end
+  
+  def test_file_upload_with_file_object_explicit_name
+    thing = @thingiverse.things.create(:name => 'Create Test Thing With File', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
+    # thing = @thingiverse.things.find(29387)
+    file = thing.upload(File.open(File.dirname(__FILE__) + '/../fixtures/test.stl'), 'my.stl')
+  
+    # puts file.url
+    assert file.name == 'my.stl'
+  end
+  
+  def test_file_upload_with_string_object
+    thing = @thingiverse.things.create(:name => 'Create Test Thing With File From String', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
+    file_content = File.open(File.dirname(__FILE__) + '/../fixtures/test.stl', 'rb') { |f| f.read } # load content from file into string
+    thingiverse_filename = "myfile.stl"
+    file = thing.upload(file_content, thingiverse_filename)
+  
+    #puts file.url
+    assert file.name == 'myfile.stl'
+  end
+  
+  # a few test cases for bad param usage.
+  def test_file_upload_wrong_params
+    assert_raise ArgumentError do Thingiverse::Things.new.upload(nil, nil) end # nil as file
+    assert_raise ArgumentError do Thingiverse::Things.new.upload(4, nil) end # wrong type as file
+    assert_raise ArgumentError do Thingiverse::Things.new.upload("content", nil) end # no thingiverse filename for string file
   end
   
   def test_publish_new_thing
