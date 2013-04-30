@@ -91,15 +91,26 @@ module Thingiverse
         send("#{name}=", value)
       end
     end
-
-    def upload(file)
-      response = Thingiverse::Connection.post("/things/#{id}/files", :body => {:filename => File.basename(file.path)}.to_json)
+    
+    # file_or_string can be a File or a String.
+    # thingiverse_filename is optional if using a File (the File filename will be used by default) but is required if using a String
+    def upload(file_or_string, thingiverse_filename=nil)
+      raise ArgumentError, "file_or_string not of accepted type. Expected File or String. Actual: #{file_or_string.class}" unless ( file_or_string.is_a?(File) || file_or_string.is_a?(String) )
+      raise ArgumentError, "when using a String as file_or_string, the thingiverse_filename is required." if file_or_string.is_a?(String) && thingiverse_filename.nil?
+      
+      if file_or_string.is_a?(File) && thingiverse_filename.nil? then
+        thingiverse_filename = File.basename(file_or_string.path)
+      end
+      
+      response = Thingiverse::Connection.post("/things/#{id}/files", :body => {:filename => thingiverse_filename}.to_json)
       raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
 
       parsed_response = JSON.parse(response.body)
       action = parsed_response["action"]
       query = parsed_response["fields"]
-      query["file"] = file
+      if file_or_string.is_a?(File) then
+        query["file"] = file_or_string
+      end
 
       # stupid S3 requires params to be in a certain order... so can't use HTTParty :(
       # prepare post data
@@ -114,7 +125,11 @@ module Thingiverse
       post_data << Curl::PostField.content('Content-Type',            query['Content-Type'])
       post_data << Curl::PostField.content('Content-Disposition',     query['Content-Disposition'])
 
-      post_data << Curl::PostField.file('file', file.path)
+      if file_or_string.is_a?(File) then
+        post_data << Curl::PostField.file('file', file_or_string.path, thingiverse_filename)
+      else
+        post_data << Curl::PostField.file('file', thingiverse_filename) { file_or_string }
+      end
 
       # post
       c = Curl::Easy.new(action) do |curl|
