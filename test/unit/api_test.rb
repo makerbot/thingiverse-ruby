@@ -23,11 +23,11 @@ class APITest < Test::Unit::TestCase
   
     assert files.size > 0
   end
-  
+
   def test_thing_user
     thing = @thingiverse.things.find(17508)
     user = thing.user
-  
+
     assert user.name == 'tbuser'
     assert user.full_name == 'Tony Buser'
   end
@@ -149,7 +149,7 @@ class APITest < Test::Unit::TestCase
     )
     thing.save
   
-    assert thing.parents.size == 2
+    assert thing.ancestors.size == 2
   end
   
   def test_set_tags
@@ -163,7 +163,7 @@ class APITest < Test::Unit::TestCase
     )
     thing.save
   
-    assert thing.tag_records.size == 3
+    assert thing.tags.size == 3
   end
   
   def test_tag_thing_list
@@ -208,5 +208,18 @@ class APITest < Test::Unit::TestCase
     tag = @thingiverse.tags.find("reprap")
     things = tag.things(:per_page => 8)
     assert things.total_pages > 8
+  end
+
+  def test_dynamic_attributes
+    user = @thingiverse.users.find('me')
+    assert user.name == 'tbuser'
+
+    user.name = 'foo'
+    assert user.name == 'foo'
+    assert user.attributes['name'] == 'foo'
+
+    user.foo = 'bar'
+    assert user.foo == 'bar'
+    assert user.attributes['foo'] == 'bar'
   end
 end

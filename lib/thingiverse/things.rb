@@ -1,48 +1,6 @@
 module Thingiverse
   class Things
-    include ActiveModel::Validations
-    validates_presence_of :name
-
-    attr_accessor :id, :name, :thumbnail, :url, :public_url, :creator, :added, :modified, :is_published, :is_wip
-    attr_accessor :ratings_enabled, :like_count, :description, :instructions, :license
-    attr_accessor :files_url, :images_url, :likes_url, :ancestors_url, :derivatives_url, :tags_url, :categories_url
-    attr_accessor :category, :ancestors, :tags
-
-    def initialize(params={})
-      params.each do |name, value|
-        send("#{name}=", value)
-      end
-    end
-
-    def attributes
-      {
-        :id => id.to_s,
-        :name => name.to_s,
-        :thumbnail => thumbnail.to_s,
-        :url => url.to_s,
-        :public_url => public_url.to_s,
-        :creator => creator.to_s,
-        :added => added.to_s,
-        :modified => modified.to_s,
-        :is_published => is_published != true ? false : true,
-        :is_wip => is_wip != true ? false : true,
-        :ratings_enabled => ratings_enabled != true ? false : true,
-        :like_count => like_count.to_s,
-        :description => description.to_s,
-        :instructions => instructions.to_s,
-        :license => license.to_s,
-        :files_url => files_url.to_s,
-        :images_url => images_url.to_s,
-        :likes_url => likes_url.to_s,
-        :ancestors_url => ancestors_url.to_s,
-        :derivatives_url => derivatives_url.to_s,
-        :tags_url => tags_url.to_s,
-        :categories_url => categories_url.to_s,
-        :category => category.to_s,
-        :ancestors => ancestors || [],
-        :tags => tags || []
-      }
-    end
+    include Thingiverse::DynamicAttributes
 
     def user
       response = Thingiverse::Connection.get("/users/#{creator['name']}")
@@ -62,12 +20,11 @@ module Thingiverse
       Thingiverse::Pagination.new(Thingiverse::Connection.get(@categories_url, :query => query), Thingiverse::Categories)
     end
 
-    def parents(query = {})
+    def ancestors(query = {})
       Thingiverse::Pagination.new(Thingiverse::Connection.get(@ancestors_url, :query => query), Thingiverse::Things)
     end
 
-    # TODO: this is a dumb name, come up with a better way to set/retrieve
-    def tag_records
+    def tags
       response = Thingiverse::Connection.get(tags_url)
       raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
       response.parsed_response.collect do |attrs|
@@ -76,12 +33,10 @@ module Thingiverse
     end
 
     def save
-      if id.to_s == ""
-        thing = Thingiverse::Things.create(attributes)
+      if @id.to_s == ""
+        thing = Thingiverse::Things.create(@attributes)
       else
-        raise "Invalid Parameters" unless self.valid?
-
-        response = Thingiverse::Connection.patch("/things/#{id}", :body => attributes.to_json)
+        response = Thingiverse::Connection.patch("/things/#{id}", :body => @attributes.to_json)
         raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
 
         thing = Thingiverse::Things.new(response.parsed_response)
@@ -151,7 +106,7 @@ module Thingiverse
     end
 
     def publish
-      if id.to_s == ""
+      if @id.to_s == ""
         raise "Cannot publish until thing is saved"
       else
         response = Thingiverse::Connection.post("/things/#{id}/publish")
@@ -177,7 +132,6 @@ module Thingiverse
 
     def self.create(params)
       thing = self.new(params)
-      raise "Invalid Parameters" unless thing.valid?
 
       response = Thingiverse::Connection.post('/things', :body => thing.attributes.to_json)
       raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
