@@ -2,10 +2,10 @@ require 'rubygems'
 require 'json'
 require 'httparty'
 require 'curb'
-require 'active_model'
 require 'cgi'
 require 'uri'
 
+require 'thingiverse/dynamic_attributes'
 require 'thingiverse/connection'
 require 'thingiverse/pagination'
 require 'thingiverse/things'
@@ -16,5 +16,5 @@ require 'thingiverse/categories'
 require 'thingiverse/tags'
 
 module Thingiverse
-  VERSION = '0.0.6'
+  VERSION = '0.0.7'
 end

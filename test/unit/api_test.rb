@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require "test/unit"
 require "thingiverse"
+require 'tempfile'
 
 class APITest < Test::Unit::TestCase
 
@@ -121,6 +122,32 @@ class APITest < Test::Unit::TestCase
     assert_raise ArgumentError do Thingiverse::Things.new.upload("content", nil) end # no thingiverse filename for string file
   end
   
+  def test_upload_binary_stl
+    thing = @thingiverse.things.new(:name => 'Binary Create Test Thing', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
+    thing.save
+  
+    thing.upload(File.open(File.dirname(__FILE__) + '/../fixtures/binary.stl'))
+  
+    thing.publish
+  
+    assert thing.is_published
+  end
+  
+  def test_upload_tempfile
+    thing = @thingiverse.things.new(:name => 'Tempfile Create Test Thing', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
+    thing.save
+  
+    tempfile = Tempfile.new('foo')
+    tempfile.write('bar')
+    tempfile.close
+  
+    file = thing.upload(tempfile)
+  
+    tempfile.unlink
+  
+    assert file.name.to_s != ""
+  end
+  
   def test_publish_new_thing
     thing = @thingiverse.things.new(:name => 'Create Test Thing', :license => 'cc-sa', :category => 'other', :description => 'foo bar', :is_wip => true)
     thing.save
@@ -149,7 +176,7 @@ class APITest < Test::Unit::TestCase
     )
     thing.save
   
-    assert thing.parents.size == 2
+    assert thing.ancestors.size == 2
   end
   
   def test_set_tags
@@ -163,7 +190,7 @@ class APITest < Test::Unit::TestCase
     )
     thing.save
   
-    assert thing.tag_records.size == 3
+    assert thing.tags.size == 3
   end
   
   def test_tag_thing_list
@@ -208,5 +235,18 @@ class APITest < Test::Unit::TestCase
     tag = @thingiverse.tags.find("reprap")
     things = tag.things(:per_page => 8)
     assert things.total_pages > 8
+  end
+  
+  def test_dynamic_attributes
+    user = @thingiverse.users.find('me')
+    assert user.name == 'tbuser'
+  
+    user.name = 'foo'
+    assert user.name == 'foo'
+    assert user.attributes['name'] == 'foo'
+  
+    user.foo = 'bar'
+    assert user.foo == 'bar'
+    assert user.attributes['foo'] == 'bar'
   end
 end
