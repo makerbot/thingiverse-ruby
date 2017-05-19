@@ -15,7 +15,7 @@ module Thingiverse
     end
 
     def auth_url
-      @auth_url || 'http://www.thingiverse.com/login/oauth/access_token'
+      @auth_url || 'https://www.thingiverse.com/login/oauth/access_token'
     end
 
     def base_url=(url)
