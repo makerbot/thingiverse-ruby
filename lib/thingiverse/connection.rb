@@ -10,6 +10,7 @@ module Thingiverse
       @code           = code
 
       self.class.base_uri(self.base_url)
+      self.class.headers "X-MakerBot-Whitelist" => "staging"
 
       self.get_token if @client_id and @client_secret and @code
     end
