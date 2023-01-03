@@ -4,7 +4,7 @@ module Thingiverse
 
     def user
       response = Thingiverse::Connection.get("/users/#{creator['name']}")
-      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+      raise ResponseError.new(response) unless response.success?
       Thingiverse::Users.new response.parsed_response
     end
 
@@ -26,7 +26,7 @@ module Thingiverse
 
     def tags
       response = Thingiverse::Connection.get(tags_url)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+      raise ResponseError.new(response) unless response.success?
       response.parsed_response.collect do |attrs|
         Thingiverse::Tags.new attrs
       end
@@ -37,7 +37,7 @@ module Thingiverse
         thing = Thingiverse::Things.create(@attributes)
       else
         response = Thingiverse::Connection.patch("/things/#{id}", :body => @attributes.to_json)
-        raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+        raise ResponseError.new(response) unless response.success?
 
         thing = Thingiverse::Things.new(response.parsed_response)
       end
@@ -46,7 +46,7 @@ module Thingiverse
         send("#{name}=", value)
       end
     end
-    
+
     # file_or_string can be a File or a String.
     # thingiverse_filename is optional if using a File (the File filename will be used by default) but is required if using a String
     def upload(file_or_string, thingiverse_filename=nil)
@@ -59,11 +59,11 @@ module Thingiverse
       else
         raise ArgumentError, "file_or_string not of accepted type. Expected File or String. Actual: #{file_or_string.class}"
       end
-      
+
       raise ArgumentError, "Unable to determine filename" if thingiverse_filename.to_s == ""
-      
+
       response = Thingiverse::Connection.post("/things/#{id}/files", :body => {:filename => thingiverse_filename}.to_json)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
+      raise ResponseError.new(response) unless response.success?
 
       parsed_response = JSON.parse(response.body)
       action = parsed_response["action"]
@@ -96,7 +96,7 @@ module Thingiverse
       if c.response_code == 303
         # finalize it
         response = Thingiverse::Connection.post(query['success_action_redirect'])
-        raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
+        raise ResponseError.new(response) unless response.success?
         Thingiverse::Files.new(response.parsed_response)
       else
         raise "#{c.response_code}: #{c.body_str}"
@@ -108,7 +108,7 @@ module Thingiverse
         raise "Cannot publish until thing is saved"
       else
         response = Thingiverse::Connection.post("/things/#{id}/publish")
-        raise "#{response.code}: #{JSON.parse(response.body)['error']}" unless response.success?
+        raise ResponseError.new(response) unless response.success?
 
         thing = Thingiverse::Things.new(response.parsed_response)
       end
@@ -120,7 +120,7 @@ module Thingiverse
 
     def self.find(thing_id)
       response = Thingiverse::Connection.get("/things/#{thing_id}")
-      raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
+      raise ResponseError.new(response) unless response.success?
       self.new response.parsed_response
     end
 
@@ -132,7 +132,7 @@ module Thingiverse
       thing = self.new(params)
 
       response = Thingiverse::Connection.post('/things', :body => thing.attributes.to_json)
-      raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
+      raise ResponseError.new(response) unless response.success?
 
       self.new(response.parsed_response)
     end
