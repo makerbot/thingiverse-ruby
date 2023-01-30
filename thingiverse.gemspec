@@ -1,5 +1,4 @@
-$LOAD_PATH.push File.expand_path("../lib", __FILE__)
-require File.expand_path("../lib/thingiverse", __FILE__)
+require File.expand_path("../lib/thingiverse/version", __FILE__)
 
 Gem::Specification.new do |s|
   s.name              = "thingiverse"
@@ -16,7 +15,7 @@ Gem::Specification.new do |s|
 
   s.require_paths     = ["lib"]
   s.files             = Dir["{lib}/**/*.rb", "test/*", "LICENSE", "README.rdoc"]
-  
+
   s.add_dependency("json")
   s.add_dependency("httparty")
   s.add_dependency("curb")
