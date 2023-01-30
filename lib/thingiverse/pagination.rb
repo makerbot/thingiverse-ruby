@@ -4,17 +4,16 @@ module Thingiverse
   class Pagination
     include Enumerable
     extend Forwardable
-    
+
     attr_reader :response, :object
     attr_reader :current_page, :total_pages, :first_url, :last_url, :next_url, :prev_url
-    
+
     def initialize(response, object)
       @response = response
       @object   = object
 
-      # TODO: provide more debug info and raise a custom exception
-      raise "#{@response.code}: #{JSON.parse(@response.body)['error']}" unless @response.success?
-      
+      raise ResponseError.new(@response) unless @response.success?
+
       @objects = @response.parsed_response.collect do |attrs|
         @object.new attrs
       end
@@ -38,7 +37,7 @@ module Thingiverse
     end
 
     def_delegators :@objects, :<<, :[], :[]=, :last, :size
-    
+
     def method_missing(meth, *args, &block)
       if meth.to_s =~ /^(.*)_page$/
         get_url_page($1, *args, &block)
@@ -46,14 +45,14 @@ module Thingiverse
         super
       end
     end
-    
+
     def get_url_page(which, *args, &block)
       url = instance_variable_get("@#{which}_url")
       Thingiverse::Pagination.new(Thingiverse::Connection.get(url), @object) if url
     end
-    
+
     def each(&block)
       @objects.each(&block)
-    end    
+    end
   end
 end
