@@ -93,7 +93,7 @@ module Thingiverse
       c.multipart_form_post = true
       c.http_post(post_data)
 
-      if c.response_code == 303
+      if c.response_code == 200
         # finalize it
         response = Thingiverse::Connection.post(query['success_action_redirect'])
         raise "#{response.code}: #{JSON.parse(response.body)['error']} #{response.headers['x-error']}" unless response.success?
