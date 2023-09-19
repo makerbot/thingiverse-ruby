@@ -7,6 +7,7 @@ require 'uri'
 
 require 'thingiverse/dynamic_attributes'
 require 'thingiverse/connection'
+require 'thingiverse/response_error'
 require 'thingiverse/pagination'
 require 'thingiverse/things'
 require 'thingiverse/files'
