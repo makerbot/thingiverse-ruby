@@ -35,7 +35,7 @@ module Thingiverse
     def get_token
       auth_response = self.class.post(auth_url, :query => {:client_id => @client_id, :client_secret => @client_secret, :code => @code})
 
-      raise "#{auth_response.code}: #{auth_response.body.inspect}" unless auth_response.success?
+      raise ResponseError.from(auth_response) unless auth_response.success?
 
       response = CGI::parse(auth_response.parsed_response)
 
@@ -53,7 +53,7 @@ module Thingiverse
     def users
       Thingiverse::Users
     end
-    
+
     def tags
       Thingiverse::Tags
     end
