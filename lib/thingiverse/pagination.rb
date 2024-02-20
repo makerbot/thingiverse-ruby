@@ -12,7 +12,7 @@ module Thingiverse
       @response = response
       @object   = object
 
-      raise ResponseError.new(@response) unless @response.success?
+      raise ResponseError.from(@response) unless @response.success?
 
       @objects = @response.parsed_response.collect do |attrs|
         @object.new attrs

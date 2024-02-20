@@ -4,7 +4,7 @@ module Thingiverse
 
     def self.find(user_name)
       response = Thingiverse::Connection.get("/users/#{user_name}")
-      raise ResponseError.new(response) unless response.success?
+      raise ResponseError.from(response) unless response.success?
       self.new response.parsed_response
     end
   end

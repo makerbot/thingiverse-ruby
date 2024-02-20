@@ -1,5 +1,14 @@
 module Thingiverse
   class ResponseError < StandardError
+    def self.from(response)
+      case response.code.to_i
+      when 420, 429
+        RateLimitExceededError.new(response)
+      else
+        new(response)
+      end
+    end
+
     def initialize(response)
       @response = response
     end
